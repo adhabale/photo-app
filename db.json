@@ -1,5 +1,4 @@
-
-export const products = [{
+[{
     "ProductID": 1,
     "Year": "1974",
     "SupplierID": 1,
