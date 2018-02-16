@@ -1,0 +1,248 @@
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-report-grid',
+  templateUrl: './report-grid.component.html',
+  styleUrls: ['./report-grid.component.css']
+})
+export class ReportGridComponent implements OnInit {
+parentItems=[];
+  selection=[];
+  selectedDrillDownLevel=0;
+  isLevel2=false;
+  isLevel3=false;
+count=0;
+  constructor() {   
+  }
+
+  ngOnInit() {
+    this.parentItems=this.getData();
+    this.selection=
+    [
+      {groupBy:'Level 0',drillDownLevel:0},
+      {groupBy:'Level 1',drillDownLevel:1},
+      {groupBy:'Level 2',drillDownLevel:2},
+      {groupBy:'Level 3',drillDownLevel:3},
+      {groupBy:'Level 4',drillDownLevel:4}
+    ];
+  }
+
+  expandAndCollapseRow(item:any){
+    this.count++;
+    if(item.childItems==undefined || item.childItems==null){
+      item.childItems=[];
+      item.childItems=this.getData();      
+    }    
+    item.isExpanded=!item.isExpanded;
+   console.log(this.count);
+  }
+
+    expandAndCollapseRegion(item:any){
+   this.isLevel2=true;
+    if(item.childItems==undefined || item.childItems==null){
+      item.childItems=[];
+      item.childItems=this.getData();      
+    }    
+    item.isExpanded=!item.isExpanded;
+   console.log(this.isLevel2);
+  }
+
+  expandAndCollapseYear(item:any){
+   this.isLevel3=true;
+    if(item.childItems==undefined || item.childItems==null){
+      item.childItems=[];
+      item.childItems=this.getData();      
+    }    
+    item.isExpanded=!item.isExpanded;
+   console.log(this.isLevel3);
+  }
+
+
+
+  onItemChange(value:any){
+    this.selectedDrillDownLevel=value;
+    this.parentItems=this.getData();
+    // console.log( this.selectedDrillDownLevel);
+  }
+
+
+  showDrilldownIcon(value:number){
+    return value<this.selectedDrillDownLevel;
+  }
+
+  getData(){
+    return [{col1:'Africa',col2:100,col3:200,col4:300,col5:400},{col1:'USA',col2:100,col3:200,col4:300,col5:400},{col1:'Asia',col2:100,col3:200,col4:300,col5:400},{col1:'Russia',col2:100,col3:200,col4:300,col5:400}];    
+  }
+
+  expandAndCollapseAll(flag:boolean){          
+      this.parentItems.map((parentItem)=> {             
+          parentItem.isExpanded=flag;
+
+          if(this.selectedDrillDownLevel>0){
+            
+            if(parentItem.childItems==undefined || parentItem.childItems==null)
+            {
+              parentItem.childItems=this.getData();
+            }
+            parentItem.childItems.map((childItem1)=>{
+                childItem1.isExpanded=flag;
+
+                if(this.selectedDrillDownLevel>1){
+
+                  if(childItem1.childItems==undefined || childItem1.childItems==null)
+                  {
+                    childItem1.childItems=this.getData();
+                  }
+                  childItem1.childItems.map((childItem2)=>{
+                      childItem2.isExpanded=flag;
+
+                      if(this.selectedDrillDownLevel>2){
+
+                        if(childItem2.childItems==undefined || childItem2.childItems==null)
+                        {
+                          childItem2.childItems=this.getData();
+                        }
+                        
+                        childItem2.childItems.map((childItem3)=>{
+                            childItem3.isExpanded=flag;
+
+                            if(this.selectedDrillDownLevel>3){
+
+                              if(childItem3.childItems==undefined || childItem3.childItems==null)
+                              {
+                                childItem3.childItems=this.getData();
+                              }
+                              
+                              childItem3.childItems.map((childItem4)=>{
+                                  childItem4.isExpanded=flag;                                                  
+                              });
+                            }                
+                        });
+                      }                
+                  });
+                }                
+            });
+          }
+      });    
+  }
+
+}
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <button (click)="expandAndCollapseAll(true)">Expand All</button>
+      <button (click)="expandAndCollapseAll(false)">Collapse All</button>
+
+      <select name="optionselection" (change)="onItemChange($event.target.value)">
+  <option *ngFor="let item of selection" [value]="item.drillDownLevel" [selected]="item.drillDownLevel==selectedDrillDownLevel">
+    {{item.groupBy}}
+  </option>
+</select>
+
+      <table class="table table-responsive  table-hover">
+        <thead>
+          <tr>
+              <!-- <th *ngIf="isCalled==true">1</th>
+            <th *ngIf="isCalled==true ">2</th>-->
+             <!-- <th *ngIf="isLevel3==true" width="20%">3</th> -->
+            <th *ngIf="isLevel2==true" width="20%">4</th>     
+            <th class="text-right">Region</th>
+            <th class="text-right">Product Id</th>
+            <th class="text-right">Year</th>
+            <th class="text-right">Units</th>
+          </tr>
+        </thead>
+        <tbody *ngFor="let parentItem of parentItems;let i = index">
+          <tr>
+            <td class="text-right"><a *ngIf="showDrilldownIcon(0)" (click)="expandAndCollapseRow(parentItem)">
+        <span [ngClass]="{'glyphicon glyphicon-minus':parentItem.isExpanded,'glyphicon glyphicon-plus':!parentItem.isExpanded}"></span></a></td>
+        <!-- <td *ngFor="let i1 of i ">{{i1}}</td>   -->
+
+        <td >{{parentItem.col1}}</td>
+        
+            <td class="text-right">{{parentItem.col2}}</td>
+            <td class="text-right">{{parentItem.col3}}</td>
+            <td class="text-right">{{parentItem.col4}}</td>
+          </tr>
+          <tr *ngIf="parentItem.childItems!=null && parentItem.childItems!=undefined && parentItem.isExpanded">
+            <td class="text-right">&nbsp;</td>
+            
+            <td colspan="4">
+              <div>
+                <table>
+                  <tbody *ngFor="let childItem of parentItem.childItems;let i1 = index">
+                    <tr>
+                      <td class="text-right"><a *ngIf="showDrilldownIcon(1)" (click)="expandAndCollapseRegion(childItem)" class="expand"><span  [ngClass]="{'glyphicon glyphicon-minus':childItem.isExpanded,'glyphicon glyphicon-plus':!childItem.isExpanded}"></span></a></td>
+                      <td class="text-right">{{childItem.col1}}</td>
+                      <td class="text-right">{{childItem.col2}}</td>
+                      <td class="text-right">{{childItem.col3}}</td>
+                      <td class="text-right">{{childItem.col4}}</td>
+                    </tr>
+                    <tr *ngIf="childItem.childItems!=null && childItem.childItems!=undefined && childItem.isExpanded">
+                      <td class="text-right">&nbsp;</td>
+                      <td colspan="4">
+                        <div>
+                          <table>
+                            <tbody *ngFor="let childItem1 of childItem.childItems;">
+                              <tr>
+                                <td class="text-right"><a *ngIf="showDrilldownIcon(2)" (click)="expandAndCollapseYear(childItem1)" class="expand"><span  [ngClass]="{'glyphicon glyphicon-minus':childItem1.isExpanded,'glyphicon glyphicon-plus':!childItem1.isExpanded}"></span></a></td>
+                                <td class="text-right">{{childItem1.col1}}</td>
+                                <td class="text-right">{{childItem1.col2}}</td>
+                                <td class="text-right">{{childItem1.col3}}</td>
+                                <td class="text-right">{{childItem1.col4}}</td>
+                              </tr>
+                              <tr *ngIf="childItem1.childItems!=null && childItem1.childItems!=undefined && childItem1.isExpanded">
+                                <td class="text-right">&nbsp;</td>
+                                <td colspan="4">
+                                  <div>
+                                    <table>
+                                      <tbody *ngFor="let childItem2 of childItem1.childItems;">
+                                        <tr>
+                                          <td class="text-right"><a *ngIf="showDrilldownIcon(3)" (click)="expandAndCollapseRow(childItem2)" class="expand"><span  [ngClass]="{'glyphicon glyphicon-minus':childItem2.isExpanded,'glyphicon glyphicon-plus':!childItem2.isExpanded}"></span></a></td>
+                                          <td class="text-right">{{childItem2.col1}}</td>
+                                          <td class="text-right">{{childItem2.col2}}</td>
+                                          <td class="text-right">{{childItem2.col3}}</td>
+                                          <td class="text-right">{{childItem2.col4}}</td>
+                                        </tr>
+                                        <tr *ngIf="childItem2.childItems!=null && childItem2.childItems!=undefined && childItem2.isExpanded">
+                                          <td class="text-right">&nbsp;</td>
+                                          <td colspan="4">
+                                            <div>
+                                              <table>
+                                                <tbody *ngFor="let childItem3 of childItem2.childItems;">
+                                                  <tr>
+                                                    <td class="text-right"><a *ngIf="showDrilldownIcon(4)" (click)="expandAndCollapseRow(childItem3)"
+                                                        class="expand"><span  [ngClass]="{'glyphicon glyphicon-minus':childItem3.isExpanded,'glyphicon glyphicon-plus':!childItem3.isExpanded}"></span></a></td>
+                                                    <td class="text-right">{{childItem3.col1}}</td>
+                                                    <td class="text-right">{{childItem3.col2}}</td>
+                                                    <td class="text-right">{{childItem3.col3}}</td>
+                                                    <td class="text-right">{{childItem3.col4}}</td>
+                                                  </tr>
+                                                </tbody>
+                                              </table>
+                                            </div>
+                                          </td>
+                                        </tr>
+                                      </tbody>
+                                    </table>
+                                  </div>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
