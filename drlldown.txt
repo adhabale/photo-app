@@ -1,0 +1,116 @@
+<div class="container">
+	<div class="row">
+		<div class="col-md-12">
+			<button (click)="expandAndCollapseAll(true)">Expand All</button>
+			<button (click)="expandAndCollapseAll(false)">Collapse All</button>
+
+			<select name="optionselection" (change)="onItemChange($event.target.value)">
+  <option *ngFor="let item of selection" [value]="item.drillDownLevel" [selected]="item.drillDownLevel==selectedDrillDownLevel">
+    {{item.groupBy}}
+  </option>
+</select>
+
+			<table class="table table-responsive  table-hover">
+				<thead>
+					<tr>
+										<th class="">Region</th>
+						<th class="">Product Id</th>
+						<th class="">Year</th>
+						<th class="">Units</th>
+					</tr>
+				</thead>
+				<tbody *ngFor="let parentItem of parentItems;let i = index">
+					<tr>
+
+					
+
+						<td width="25%">
+              <a *ngIf="showDrilldownIcon(0)" (click)="expandAndCollapseRow(parentItem)">
+								<span [ngClass]="{'glyphicon glyphicon-minus':parentItem.isExpanded,'glyphicon glyphicon-plus':!parentItem.isExpanded}"></span></a>
+              {{parentItem.col1}}</td>
+
+						<td width="25%" class="">{{parentItem.col2}}</td>
+						<td width="25%" class="">{{parentItem.col3}}</td>
+						<td width="25%" class="">{{parentItem.col4}}</td>
+					</tr>
+					<tr *ngIf="parentItem.childItems!=null && parentItem.childItems!=undefined && parentItem.isExpanded">
+				
+
+						<td colspan="4">
+							<div>
+								<table class="table table-responsive  table-hover">
+									<tbody *ngFor="let childItem of parentItem.childItems;let i1 = index">
+										<tr>
+									
+											<td width="25%">			<a *ngIf="showDrilldownIcon(1)" (click)="expandAndCollapseRow(childItem)" class="expand"><span [ngClass]="{'glyphicon glyphicon-minus':childItem.isExpanded,'glyphicon glyphicon-plus':!childItem.isExpanded}"></span></a>{{childItem.col1}}</td>
+											<td width="25%"class="">{{childItem.col2}}</td>
+											<td width="25%"class="">{{childItem.col3}}</td>
+											<td width="25%" class="">{{childItem.col4}}</td>
+										</tr>
+										<tr *ngIf="childItem.childItems!=null && childItem.childItems!=undefined && childItem.isExpanded">
+										
+											<td colspan="4">
+												<div>
+													<table class="table table-responsive  table-hover">
+														<tbody *ngFor="let childItem1 of childItem.childItems;">
+															<tr>
+														
+																<td width="25%">
+                                  		<a *ngIf="showDrilldownIcon(2)" (click)="expandAndCollapseRow(childItem1)" class="expand"><span [ngClass]="{'glyphicon glyphicon-minus':childItem1.isExpanded,'glyphicon glyphicon-plus':!childItem1.isExpanded}"></span></a>{{childItem1.col1}}</td>
+																<td width="25%"class="">{{childItem1.col2}}</td>
+																<td width="25%" class="">{{childItem1.col3}}</td>
+																<td width="25%" class="">{{childItem1.col4}}</td>
+															</tr>
+															<tr *ngIf="childItem1.childItems!=null && childItem1.childItems!=undefined && childItem1.isExpanded">
+															
+																<td colspan="4">
+																	<div>
+																		<table class="table table-responsive  table-hover">
+																			<tbody *ngFor="let childItem2 of childItem1.childItems;">
+																				<tr>
+																				
+																					<td width="25%" class="">
+                                            		<a *ngIf="showDrilldownIcon(2)" (click)="expandAndCollapseRow(childItem1)" class="expand"><span [ngClass]="{'glyphicon glyphicon-minus':childItem1.isExpanded,'glyphicon glyphicon-plus':!childItem1.isExpanded}"></span></a>{{childItem2.col1}}</td>
+																					<td width="25%"  class="">{{childItem2.col2}}</td>
+																					<td width="25%" class="">{{childItem2.col3}}</td>
+																					<td width="25%" class="">{{childItem2.col4}}</td>
+																				</tr>
+																				<tr *ngIf="childItem2.childItems!=null && childItem2.childItems!=undefined && childItem2.isExpanded">
+																				
+																					<td colspan="4">
+																						<div>
+																							<table class="table table-responsive  table-hover">
+																								<tbody *ngFor="let childItem3 of childItem2.childItems;">
+																									<tr>
+																									
+																										<td width="25%" class="">	<a *ngIf="showDrilldownIcon(4)" (click)="expandAndCollapseRow(childItem3)" class="expand"><span [ngClass]="{'glyphicon glyphicon-minus':childItem3.isExpanded,'glyphicon glyphicon-plus':!childItem3.isExpanded}"></span></a>{{childItem3.col1}}</td>
+																										<td width="25%" class="">{{childItem3.col2}}</td>
+																										<td  width="25%" class="">{{childItem3.col3}}</td>
+																										<td width="25%" class="">{{childItem3.col4}}</td>
+																									</tr>
+																								</tbody>
+																							</table>
+																						</div>
+																					</td>
+																				</tr>
+																			</tbody>
+																		</table>
+																	</div>
+																</td>
+															</tr>
+														</tbody>
+													</table>
+												</div>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+
+	</div>
+</div>>
